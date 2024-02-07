@@ -1,10 +1,11 @@
-CREATE TABLE [IF NOT EXISTS] workout (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR NOT NULL,
-)
+CREATE TABLE workout (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR NOT NULL
+);
 
-CREATE TABLE [IF NOT EXISTS] exercise (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE exercise (
+    id BIGSERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
-    CONSTRAINT fk_workout FOREIGN KEY(fk_workout) REFERENCES workout(id)
-)
+    workout_id INT,
+    CONSTRAINT fk_workout FOREIGN KEY(workout_id) REFERENCES workout(id)
+);

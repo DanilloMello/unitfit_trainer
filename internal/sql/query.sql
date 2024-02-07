@@ -1,20 +1,17 @@
--- WORKOUT
---name: CreateWorkout :exec
-INSERT INTO workout (id, name) VALUES(?,?);
+-- name: CreateWorkout :exec
+INSERT INTO workout (id, name) VALUES($1,$2) RETURNING *;
 
---name: GetWorkout :one
-SELECT * FROM workout WHERE id = ?;
+-- name: GetWorkouts :many
+SELECT * FROM workout ORDER BY name;
 
---name: GetWorkouts :many
-SELECT * FROM workout;
+-- name: GetWorkout :one
+SELECT * FROM workout WHERE id = $1 LIMIT 1;
 
--- EXERCISE
 -- name: CreateExercise :exec
-INSERT INTO exercise (id, name) VALUES(?,?);
+INSERT INTO exercise (id, name, workout_id) VALUES($1,$2,$3) RETURNING *;
 
---name: GetExercise :one
-SELECT * FROM exercise WHERE id = ?;
+-- name: GetExercise :one
+SELECT * FROM exercise WHERE id = $1 LIMIT 1;
 
---name: GetExercises :many
-SELECT * FROM exercise;
-
+-- name: GetExercises :many
+SELECT * FROM exercise ORDER BY name;
