@@ -4,14 +4,12 @@
 
 package db
 
-import (
-	"github.com/jackc/pgx/v5/pgtype"
-)
+import ()
 
 type Exercise struct {
 	ID        int64
 	Name      string
-	WorkoutID pgtype.Int4
+	WorkoutID int32
 }
 
 type Workout struct {

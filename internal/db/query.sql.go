@@ -7,18 +7,16 @@ package db
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createExercise = `-- name: CreateExercise :exec
-INSERT INTO exercise (id, name, workout_id) VALUES($1,$2,$3) RETURNING id, name, workout_id
+INSERT INTO exercises (id, name, workout_id) VALUES($1,$2,$3) RETURNING id, name, workout_id
 `
 
 type CreateExerciseParams struct {
 	ID        int64
 	Name      string
-	WorkoutID pgtype.Int4
+	WorkoutID int32
 }
 
 func (q *Queries) CreateExercise(ctx context.Context, arg CreateExerciseParams) error {
@@ -27,7 +25,7 @@ func (q *Queries) CreateExercise(ctx context.Context, arg CreateExerciseParams) 
 }
 
 const createWorkout = `-- name: CreateWorkout :exec
-INSERT INTO workout (id, name) VALUES($1,$2) RETURNING id, name
+INSERT INTO workouts (id, name) VALUES($1,$2) RETURNING id, name
 `
 
 type CreateWorkoutParams struct {
@@ -41,7 +39,7 @@ func (q *Queries) CreateWorkout(ctx context.Context, arg CreateWorkoutParams) er
 }
 
 const getExercise = `-- name: GetExercise :one
-SELECT id, name, workout_id FROM exercise WHERE id = $1 LIMIT 1
+SELECT id, name, workout_id FROM exercises WHERE id = $1 LIMIT 1
 `
 
 func (q *Queries) GetExercise(ctx context.Context, id int64) (Exercise, error) {
@@ -52,7 +50,7 @@ func (q *Queries) GetExercise(ctx context.Context, id int64) (Exercise, error) {
 }
 
 const getExercises = `-- name: GetExercises :many
-SELECT id, name, workout_id FROM exercise ORDER BY name
+SELECT id, name, workout_id FROM exercises ORDER BY name
 `
 
 func (q *Queries) GetExercises(ctx context.Context) ([]Exercise, error) {
@@ -76,7 +74,7 @@ func (q *Queries) GetExercises(ctx context.Context) ([]Exercise, error) {
 }
 
 const getWorkout = `-- name: GetWorkout :one
-SELECT id, name FROM workout WHERE id = $1 LIMIT 1
+SELECT id, name FROM workouts WHERE id = $1 LIMIT 1
 `
 
 func (q *Queries) GetWorkout(ctx context.Context, id int64) (Workout, error) {
@@ -87,7 +85,7 @@ func (q *Queries) GetWorkout(ctx context.Context, id int64) (Workout, error) {
 }
 
 const getWorkouts = `-- name: GetWorkouts :many
-SELECT id, name FROM workout ORDER BY name
+SELECT id, name FROM workouts ORDER BY name
 `
 
 func (q *Queries) GetWorkouts(ctx context.Context) ([]Workout, error) {

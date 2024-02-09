@@ -1,11 +1,9 @@
-CREATE TABLE workout (
+CREATE TABLE workouts (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR NOT NULL
 );
-
-CREATE TABLE exercise (
+CREATE TABLE exercises (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
-    workout_id INT,
-    CONSTRAINT fk_workout FOREIGN KEY(workout_id) REFERENCES workout(id)
+    workout_id SERIAL NOT NULL REFERENCES workouts(id)
 );
