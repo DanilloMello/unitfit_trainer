@@ -9,68 +9,15 @@ import (
 	"context"
 )
 
-const createExercise = `-- name: CreateExercise :exec
-INSERT INTO exercises (id, name, workout_id) VALUES($1,$2,$3) RETURNING id, name, workout_id
+const createWorkout = `-- name: CreateWorkout :one
+INSERT INTO workouts (name) VALUES($1) RETURNING id, name
 `
 
-type CreateExerciseParams struct {
-	ID        int64
-	Name      string
-	WorkoutID int32
-}
-
-func (q *Queries) CreateExercise(ctx context.Context, arg CreateExerciseParams) error {
-	_, err := q.db.Exec(ctx, createExercise, arg.ID, arg.Name, arg.WorkoutID)
-	return err
-}
-
-const createWorkout = `-- name: CreateWorkout :exec
-INSERT INTO workouts (id, name) VALUES($1,$2) RETURNING id, name
-`
-
-type CreateWorkoutParams struct {
-	ID   int64
-	Name string
-}
-
-func (q *Queries) CreateWorkout(ctx context.Context, arg CreateWorkoutParams) error {
-	_, err := q.db.Exec(ctx, createWorkout, arg.ID, arg.Name)
-	return err
-}
-
-const getExercise = `-- name: GetExercise :one
-SELECT id, name, workout_id FROM exercises WHERE id = $1 LIMIT 1
-`
-
-func (q *Queries) GetExercise(ctx context.Context, id int64) (Exercise, error) {
-	row := q.db.QueryRow(ctx, getExercise, id)
-	var i Exercise
-	err := row.Scan(&i.ID, &i.Name, &i.WorkoutID)
+func (q *Queries) CreateWorkout(ctx context.Context, name string) (Workout, error) {
+	row := q.db.QueryRow(ctx, createWorkout, name)
+	var i Workout
+	err := row.Scan(&i.ID, &i.Name)
 	return i, err
-}
-
-const getExercises = `-- name: GetExercises :many
-SELECT id, name, workout_id FROM exercises ORDER BY name
-`
-
-func (q *Queries) GetExercises(ctx context.Context) ([]Exercise, error) {
-	rows, err := q.db.Query(ctx, getExercises)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Exercise
-	for rows.Next() {
-		var i Exercise
-		if err := rows.Scan(&i.ID, &i.Name, &i.WorkoutID); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
 }
 
 const getWorkout = `-- name: GetWorkout :one
@@ -84,12 +31,12 @@ func (q *Queries) GetWorkout(ctx context.Context, id int64) (Workout, error) {
 	return i, err
 }
 
-const getWorkouts = `-- name: GetWorkouts :many
+const listWorkouts = `-- name: ListWorkouts :many
 SELECT id, name FROM workouts ORDER BY name
 `
 
-func (q *Queries) GetWorkouts(ctx context.Context) ([]Workout, error) {
-	rows, err := q.db.Query(ctx, getWorkouts)
+func (q *Queries) ListWorkouts(ctx context.Context) ([]Workout, error) {
+	rows, err := q.db.Query(ctx, listWorkouts)
 	if err != nil {
 		return nil, err
 	}

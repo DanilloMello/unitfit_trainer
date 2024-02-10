@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"os"
 
 	"github.com/DanilloMello/unitfit_trainer/internal/db"
 	"github.com/jackc/pgx/v5"
@@ -20,19 +19,25 @@ func main() {
 
 	ctx := context.Background()
 
-	conn, err := pgx.Connect(ctx, os.Getenv("DATABASE_URL"))
+	conn, err := pgx.Connect(ctx, "user=dbm dbname=postgres")
+
 	if err != nil {
 		panic(err.Error())
 	}
+
 	defer conn.Close(ctx)
 
 	queries := db.New(conn)
 
-	queries.CreateWorkout(ctx, db.CreateWorkoutParams{
-		Name: "Fulano",
-	})
+	workout, err := queries.CreateWorkout(ctx, "Fulano")
 
-	workouts, err := queries.GetWorkouts(ctx)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	log.Println(workout)
+
+	workouts, err := queries.ListWorkouts(ctx)
 
 	if err != nil {
 		panic(err.Error())

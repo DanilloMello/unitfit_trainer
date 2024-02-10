@@ -6,12 +6,6 @@ package db
 
 import ()
 
-type Exercise struct {
-	ID        int64
-	Name      string
-	WorkoutID int32
-}
-
 type Workout struct {
 	ID   int64
 	Name string
